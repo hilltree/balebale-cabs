@@ -1,0 +1,8 @@
+{
+  "importMap": "import_map.json",
+  "tasks": {
+    "start": "deno run --allow-env --allow-net supabase/functions/confirm-booking/index.ts"
+  },
+  "lint": true,
+  "fmt": true
+}

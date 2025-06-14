@@ -32,10 +32,8 @@ serve(async (req) => {
         JSON.stringify({ error: 'Booking is not in pending status' }),
         { status: 400 }
       )
-    }
-
-    // Check if there are enough seats available
-    if (booking.rides.seats_available < booking.seats_booked) {
+    }    // Check if there are enough seats available
+    if (booking.rides.available_seats < booking.seats_booked) {
       return new Response(
         JSON.stringify({ error: 'Not enough seats available' }),
         { status: 400 }

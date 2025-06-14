@@ -10,9 +10,8 @@ RETURNS TABLE (
   driver_id uuid,
   source text,
   destination text,
-  date timestamp with time zone,
-  seats_available integer,
-  price_per_seat float,
+  date timestamp with time zone,    available_seats integer,
+    fare decimal(10,2),
   distance_meters double precision
 ) AS $$
 BEGIN
@@ -21,18 +20,16 @@ BEGIN
     r.id,
     r.driver_id,
     r.source,
-    r.destination,
-    r.date,
-    r.seats_available,
-    r.price_per_seat,
+    r.destination,    r.departure_time,
+    r.available_seats,
+    r.fare,
     ST_Distance(
       r.source_coords::geography,
       ST_SetSRID(ST_MakePoint(user_lng, user_lat), 4326)::geography
     ) as distance_meters
   FROM rides r
-  WHERE 
-    r.date >= ride_date
-    AND r.seats_available > 0
+  WHERE    r.departure_time >= ride_date
+    AND r.available_seats > 0
     AND ST_DWithin(
       r.source_coords::geography,
       ST_SetSRID(ST_MakePoint(user_lng, user_lat), 4326)::geography,
@@ -64,8 +61,7 @@ BEGIN
   WHERE id = p_booking_id;
 
   -- Update available seats
-  UPDATE rides
-  SET seats_available = seats_available - p_seats_booked
+  UPDATE rides  SET available_seats = available_seats - p_seats_booked
   WHERE id = v_ride_id;
 END;
 $$ LANGUAGE plpgsql;
